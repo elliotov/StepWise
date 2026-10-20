@@ -1,0 +1,7 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Stepwise</title><link rel="stylesheet" href="styles.css"><script type="module" src="panel.js"></script></head>
+<body class="panel"><header class="app-header"><a class="brand" href="#" id="home" aria-label="Stepwise home"></a><div class="header-actions"><span class="count-badge" id="open-count">0 open</span><button class="icon-button" id="settings" aria-label="Open settings" title="Settings"></button></div></header>
+<nav class="tabs" aria-label="Panel views"><button id="plan-tab" class="selected">Plan a page</button><button id="list-tab">My to-do list <span id="list-count"></span></button></nav>
+<main id="main" aria-busy="false"></main><footer class="panel-footer"><span class="footer-dot"></span>Steps done wiser.</footer><div id="toast" role="status" aria-live="polite"></div>
+<dialog id="edit-dialog"><form id="edit-form"><div class="section-heading"><h2>Edit your step</h2><button type="button" class="icon-button" id="cancel-edit" aria-label="Close editor">×</button></div><label for="edit-title">Step title</label><input id="edit-title" maxlength="180" required><label for="edit-detail">First action / detail</label><textarea id="edit-detail" rows="4" maxlength="700"></textarea><button class="primary full" type="submit">Save changes</button></form></dialog>
+</body></html>

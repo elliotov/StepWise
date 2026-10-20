@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+let listener;
+const memory={};
+const base='chrome-extension://test-extension/';
+globalThis.chrome={storage:{local:{async setAccessLevel(){},async get(k){return structuredClone({[k]:memory[k]});},async set(v){await new Promise(r=>setTimeout(r,2));Object.assign(memory,structuredClone(v));}},session:{async setAccessLevel(){}}},sidePanel:{async setPanelBehavior(){}},runtime:{id:'test-extension',getURL:s=>base+s,onInstalled:{addListener(){}},onStartup:{addListener(){}},onMessage:{addListener(fn){listener=fn;}}}};
+await import('../background.js');
+const send=action=>new Promise(resolve=>listener({type:'mutate',action},{id:'test-extension',url:base+'panel.html'},resolve));
+test('background serializes concurrent writes from multiple panels',async()=>{const results=await Promise.all(Array.from({length:20},(_,i)=>send({type:'quickAdd',title:`Task ${i}`})));assert.ok(results.every(r=>r.ok));assert.equal(memory.stepwise.tasks.length,20);assert.equal(new Set(memory.stepwise.tasks.map(x=>x.title)).size,20);});
+test('messages from web pages cannot mutate extension state',()=>{const result=listener({type:'mutate',action:{type:'quickAdd',title:'Untrusted'}},{id:'test-extension',url:'https://canvas.example.edu/'},()=>assert.fail('Unexpected response'));assert.equal(result,undefined);assert.ok(!memory.stepwise.tasks.some(t=>t.title==='Untrusted'));});
