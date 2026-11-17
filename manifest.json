@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Stepwise \u2014 Steps done wiser",
-  "version": "1.2.2",
-  "description": "Turn Canvas assignments and web pages into an editable AI plan, then keep every next step in one place.",
+  "name": "Stepwise API \u2014 Steps done wiser",
+  "version": "1.4.1",
+  "description": "Plan Canvas assignments, export calendar tasks, and optionally learn how to complete each step using your OpenAI API key.",
   "minimum_chrome_version": "138",
   "permissions": [
     "sidePanel",
@@ -40,6 +40,9 @@
     "128": "icons/icon128.png"
   },
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'none'; connect-src 'none'; base-uri 'none';"
-  }
+    "extension_pages": "script-src 'self'; object-src 'none'; worker-src 'self'; connect-src 'self' https: http:; base-uri 'none';"
+  },
+  "host_permissions": [
+    "https://api.openai.com/*"
+  ]
 }

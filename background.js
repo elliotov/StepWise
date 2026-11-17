@@ -1,4 +1,4 @@
-import {initialState,mutate} from './core.js';
+import {initialState,mutate,migrateState} from './core.js';
 async function configure(){
   await chrome.storage.local.setAccessLevel({accessLevel:'TRUSTED_CONTEXTS'});
   await chrome.storage.session.setAccessLevel({accessLevel:'TRUSTED_CONTEXTS'});
@@ -13,7 +13,7 @@ chrome.runtime.onMessage.addListener((message,sender,reply)=>{
   if(message.type!=='state' && message.type!=='mutate')return;
   queue=queue.then(async()=>{
     const saved=await chrome.storage.local.get('stepwise');
-    let state=saved.stepwise || initialState();
+    let state=migrateState(saved.stepwise);
     if(message.type==='mutate'){
       state=mutate(state,message.action);
       await chrome.storage.local.set({stepwise:state});
@@ -23,4 +23,4 @@ chrome.runtime.onMessage.addListener((message,sender,reply)=>{
   return true;
 });
 
-chrome.runtime.onInstalled.addListener(async()=>{await chrome.storage.local.remove('apiKey');await chrome.storage.session.remove('apiKey');});
+

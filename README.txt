@@ -1,60 +1,91 @@
-STEPWISE 1.2.2 — CHROME BUILT-IN AI
+STEPWISE API 1.4.1 — SIX FEEDBACK IMPROVEMENTS
 
-INSTALL / UPDATE
-1. Extract this ZIP and keep the stepwise-extension folder somewhere permanent.
-2. Open chrome://extensions and turn on Developer mode.
-3. For a first install, click Load unpacked and select stepwise-extension.
-   For an existing install, replace its files in its ORIGINAL folder, then click
-   Reload on the existing Stepwise card. Keeping that folder preserves tasks.
-4. Open Stepwise Settings and click Enable local AI. Keep the tab open until ready.
-5. Open a Canvas assignment, click Stepwise, then Break this into steps.
-   Grant access to the site if asked. Add the resulting steps to your to-do list.
+UPDATE AND KEEP YOUR TASKS
+Make a backup copy of your existing extension folder. Copy this folder's
+contents into that SAME existing folder, then click Reload on its card at
+chrome://extensions. Do not remove/reinstall or change the install folder
+when updating: Chrome associates the unpacked extension with that path.
+Existing tasks, edits, completion state, settings and saved API explanations
+are preserved. Historical duplicates are not silently deleted; remove any
+unwanted old copies manually. The local/API variants retain separate storage.
 
-No API key, paid subscription, or Google/OpenAI login is required.
-Chrome downloads Gemini Nano once, then runs planning locally. Internet is
-required for that initial download and for loading Canvas pages.
+FIRST INSTALL
+1. Extract the ZIP into a permanent location.
+2. At chrome://extensions enable Developer mode.
+3. Click Load unpacked and select stepwise-api-extension (contains manifest.json).
+4. Open Stepwise from Chrome's Extensions menu and follow its setup checklist.
+5. Open Settings and enter your own OpenAI API key, then Save settings.
+6. Open a Canvas assignment. Grant site access when prompted, or use pasted
+   instructions / an uploaded PDF instead. Open the panel's Plan a page tab.
 
-REQUIREMENTS
-Chrome 138+ on a supported desktop OS (Windows 10/11, macOS 13+, Linux,
-or Chromebook Plus). At least 22 GB free on the Chrome profile drive.
-Either strictly more than 4 GB GPU VRAM, OR 16 GB RAM and at least 4 CPU cores.
-If free space falls below 10 GB Chrome may remove the model.
-Managed school/work browser policies may disable local AI.
-Use Settings > Check compatibility to inspect actual availability.
+THE SIX CHANGES
+1. One checklist per assignment: reopening an assignment offers Open existing
+   plan or Review updated plan. Generating again does not automatically append
+   another checklist. Assignment identity ignores Canvas module query strings.
+   A reviewed update re-reads current page instructions (unless you edited the
+   page preview), shows saved tasks, and adds ONLY suggestions you select.
+   Existing edited/completed/manual tasks are never replaced by that update.
+2. Stable list rendering: keeps task/step DOM elements and scroll position;
+   throttles streaming refreshes and removes repeated step-entry animations.
+3. PDF instructions: upload a PDF, or Read page & find attachments > select a
+   link > Load selected PDF. Grant access to that link if requested. Text is
+   parsed locally with bundled PDF.js 5.6.205, then displayed in a preview.
+   Review/correct the extracted text; uncheck Include to leave a file out.
+   If Canvas returns a login page or blocks downloads, download the PDF using
+   Canvas itself, then upload it in Stepwise.
+4. Additional instructions: paste missing requirements, rubrics or context.
+   Review/correct the page preview too. Sparse pages prompt for more content.
+5. Optional detail: Automatic (default), Brief, Standard, Detailed, or Custom
+   maximum of 3–30 steps. Short assignments can use fewer steps rather than
+   adding filler. No per-step time limits or time estimates.
+6. First-time setup checklist: installation, AI connection, site access and first
+   plan. Hide it when ready; restore it from Settings at any time.
 
-PRIVACY AND LIMITATIONS
-Assignment text is processed on your computer; no assignment text is sent to
-Google or OpenAI for planning. Tasks/settings remain in your Chrome profile.
-Previously stored OpenAI keys are removed on extension install/update.
-Stepwise reads visible assignment text only when requested. It cannot read
-linked PDFs or embedded documents. Review plans against the assignment and
-rubric: local AI can omit requirements or make mistakes. Stepwise does not complete or submit assignments.
-The first generated step is a small starting action. You can edit
-steps, add them individually or together, complete tasks, and revisit sources.
+PDF AND INPUT LIMITS
+Up to 3 PDFs for a page; each at most 12 MB, 80 pages and 40,000 extracted text
+characters. Combined instructions must fit within 60,000 characters: shorten
+previews or exclude files if the limit is exceeded. Long extracted sources
+show warnings. Scanned/image-only PDFs need OCR, which is NOT included.
+Password-protected PDFs need an unlocked copy. Diagrams, handwriting, tables
+and mathematical layout may be missing or misread. Always review the text.
+No PDF scripts, embedded attachments, external links or actions are executed.
 
-TROUBLESHOOTING
-Unavailable: update Chrome, check storage/RAM/CPU/GPU and browser policies.
-Download stuck: use an unmetered connection and keep Settings open.
-Bad/incomplete plan: retry on a more focused assignment page and check assignment instructions.
-Do not use Chrome Incognito for model setup.
+INPUT STORAGE
+Extra instructions and extracted PDF TEXT (not PDF file bytes) are retained for
+up to five page URLs in Chrome session storage, so closing/reopening the panel
+does not lose them. They normally clear after a browser restart. Clear extra
+inputs removes them for the current page. Generated context is kept with saved
+assignments for reference / help. Deleting an assignment removes its tasks and
+saved context. Check source previews after a page changes.
 
-Developer checks: npm test (mocked Chrome/AI APIs). Actual model download and
-inference must be verified in desktop Chrome on a compatible device.
-Official reference: https://developer.chrome.com/docs/ai/prompt-api
+API CONNECTION, HELP AND CALENDAR
+Use your own OpenAI API key and a model your account supports (default:
+gpt-4.1-mini; Responses and Structured Outputs). Usage may incur charges.
+The key is session-only unless Remember on this device is selected. Remembered
+keys are stored without encryption in this Chrome profile. No key is included.
+Plans send the selected page/PDF/pasted text to OpenAI. Optional step help sends
+the selected task, saved context and your question. Requests set store:false;
+OpenAI API data policies still apply. Step help is OFF by default: enable it in
+Settings, then click Help me complete this step and request an explanation.
+Math help includes a worked calculation, answer and verification. Check it.
+Saved-task help is kept with that task. Help requested only from a plan step
+is shown in the dialog; request it from a saved task to keep it for export.
+Export to calendar downloads an all-day .ics file for a date you choose.
+Import that file into your calendar. There is no automatic account sync.
+The export includes saved task help when available.
 
-1.1.1: Adds enhanced Canvas assignment selectors and an individual-assignment
-content fallback for layouts without the legacy description wrapper.
+TESTING
+npm test (Node.js 24+) runs unit/controller checks and actual PDF extraction
+fixtures. It makes no live or billable AI calls. Renderer/controller checks use
+DOM and Chrome doubles. See BROWSER-CHECKLIST.txt for on-device tests.
+Chromium could not launch in the build environment due to OS socket restrictions;
+browser appearance, scrolling, actual Canvas downloads and live AI requests are
+not claimed as verified here. No Chrome Web Store publication is claimed.
 
-1.1.2: Constrains local AI output to the required JSON fields, normalizes
-quoted integer estimates, and retries malformed plans once automatically.
+THIRD PARTY
+PDF.js 5.6.205 legacy build, Mozilla contributors, Apache-2.0.
+License and packaged assets: vendor/pdfjs/. No OCR library is included.
 
-1.1.3: On native AI errors or invalid output, retries in a fresh session
-without constrained decoding. Both modes validate the full plan before saving.
-
-1.2.0: Plan length is automatic. The AI chooses 3–12 steps from assignment
-scope and deliverables; existing fixed-count preferences are ignored.
-
-1.2.1: New plans show actions without time estimates or time limits.
-
-1.2.2: If a scrolled Canvas assignment cannot be read, briefly scrolls to the
-top and retries after rendering, then restores the original scroll position.
+1.4.1: API errors now show safe reason codes and request IDs. Confirmed output
+limit failures retry once with more room; this may incur another API request.
+No automatic retry for quota, authentication, refusals or unknown errors.
